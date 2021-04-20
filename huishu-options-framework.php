@@ -89,7 +89,7 @@ class HUisHUOptionsFramework {
     private function register_options(){
         $main_options_title = __(apply_filters('huishu_options_framework_main_page_title','Zusätzliche Optionen'));
         $main_options_capability = apply_filters('huishu_options_framework_main_page_capability','manage_options');
-        $main_options_page_fields = apply_filters('huishu_options_framework_main_page_field',array());
+        $main_options_page_fields = apply_filters('huishu_options_framework_main_page_fields',array());
         $options_pages = apply_filters('huishu_options_framework_options_pages',array());
         $group_fields = array();
         $cmb_additional_options = array();
