@@ -1,13 +1,14 @@
-###HUisHU Options Framework
+# HUisHU Options Framework
 
 Bietet Funktionen für Optionen für HUisHU Themes und Plugins
 
-##Verwendung:
+## Verwendung:
 
 Feld-Argumente einzusehen unter https://github.com/CMB2/CMB2/wiki/Field-Types
 
-##Einfaches Feld auf der Haupt-Optionen-Seite einfügen:
+### Einfaches Feld auf der Haupt-Optionen-Seite einfügen:
 
+```
 add_filter('huishu_options_framework_main_page_fields','add_my_text_field');
 function add_my_text_field($options){
     $options[] = array(
@@ -19,9 +20,11 @@ function add_my_text_field($options){
     );
     return $options;
 }
+```
 
-##Gruppenfeld auf der Haupt-Optionen-Seite einfügen:
+### Gruppenfeld auf der Haupt-Optionen-Seite einfügen:
 
+```
 add_filter('huishu_options_framework_main_page_fields','add_my_group_field');
 function add_my_group_field($options){
     $options[] = array(
@@ -48,9 +51,11 @@ function add_my_group_field($options){
     );
     return $options;
 }
+```
 
-##Zusätzliche Unter-Optionenseite mit Feldern anlegen:
+### Zusätzliche Unter-Optionenseite mit Feldern anlegen:
 
+```
 add_filter('huishu_options_framework_options_pages','add_my_options_page');
 function add_my_options_page($subpages){
     $subpages[] = array(
@@ -89,11 +94,16 @@ function add_my_options_page($subpages){
     );
     return $subpages;
 }
+```
 
-##Optionen der Haupt-Optionsseite abrufen:
+### Optionen der Haupt-Optionsseite abrufen:
 
+```
 hu_options_framework()->get_main_option('wiki_test_text','Standardwert');
+```
 
-##Optionen einer angelegten Options-Unterseite abrufen
+### Optionen einer angelegten Options-Unterseite abrufen
 
+```
 hu_options_framework()->get_option('mein_options_key','wiki_test_text','Standardwert');
+```
