@@ -2,7 +2,7 @@
 /*
 Plugin Name: HUisHU Options Framework
 Description: Bietet Funktionen für Optionen für HUisHU Themes und Plugins
-Version: 1.0
+Version: 1.0.1
 Author: Sebastian Blasius, HUisHU
 Author URI: https://www.huishu-agentur.de
 License: GPL2+
@@ -108,7 +108,7 @@ class HUisHUOptionsFramework {
             if(($main_option['type'] == 'group') && isset($main_option['groupfields']) && !empty($main_option['groupfields'])){
                 $group_fields['hu_options_framework_main_options'][$main_option['id']] = $cmb_options_main_page->add_field($main_option);
                 foreach($main_option['groupfields'] as $groupfield){
-                    $cmb_options_main_page->add_group_field($group_fields['hu_options_framework_main_options'][$options_field['id']], $groupfield);
+                    $cmb_options_main_page->add_group_field($group_fields['hu_options_framework_main_options'][$main_option['id']], $groupfield);
                 }
             } else {
                 $cmb_options_main_page->add_field($main_option);
