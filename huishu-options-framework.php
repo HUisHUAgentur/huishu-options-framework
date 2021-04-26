@@ -24,6 +24,7 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 	__FILE__,
 	'huishu-options-framework'
 );
+$myUpdateChecker->setBranch('main');
 
 require_once(plugin_dir_path( __FILE__ ).'class-tgm-plugin-activation.php');
 
