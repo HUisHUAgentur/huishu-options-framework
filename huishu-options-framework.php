@@ -2,7 +2,7 @@
 /*
 Plugin Name: HUisHU Options Framework
 Description: Bietet Funktionen für Optionen für HUisHU Themes und Plugins
-Version: 1.0.1
+Version: 1.0.2
 Author: Sebastian Blasius, HUisHU
 Author URI: https://www.huishu-agentur.de
 License: GPL2+
@@ -84,7 +84,7 @@ class HUisHUOptionsFramework {
     * externe Instanzierung verbieten
     */
     protected function __construct() {
-        add_action( 'cmb2_admin_init', array($this,'register_options' ) );
+        add_action( 'cmb2_admin_init', array( $this, 'register_options' ) );
     }
 
     private function register_options(){
