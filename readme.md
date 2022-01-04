@@ -26,7 +26,7 @@ function add_my_text_field($cmb_options_main_page){
 ### Zusätzliche Unter-Optionenseite mit Feldern anlegen:
 
 ```
-add_filter('huishu_options_framework_do_additional_pages','add_my_options_page');
+add_action('huishu_options_framework_do_additional_pages','add_my_options_page');
 function add_my_options_page($main_options_key){
     $cmb_additional_options_page = new_cmb2_box( array(
         'id'           => 'my_custom_framework_subpage',
