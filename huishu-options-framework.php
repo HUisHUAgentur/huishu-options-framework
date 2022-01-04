@@ -87,24 +87,9 @@ class HUisHUOptionsFramework {
         add_action( 'cmb2_admin_init', array( $this, 'register_options' ) );
     }
 
-    public function register_options(){
-        $main_options_title = __(apply_filters('huishu_options_framework_main_page_title','Zusätzliche Optionen'));
-        $main_options_capability = apply_filters('huishu_options_framework_main_page_capability','manage_options');
-        $main_options_page_fields = apply_filters('huishu_options_framework_main_page_fields',array());
-        $options_pages = apply_filters('huishu_options_framework_options_pages',array());
+    public function _add_legacy_fields_to_main_options_page( $cmb_options_main_page ){
+        $main_options_page_fields = apply_filters( 'huishu_options_framework_main_page_fields', array() );
         $group_fields = array();
-        $cmb_additional_options = array();
-        if(!(count($main_options_page_fields) || count($options_pages))){
-            return;
-        }
-        $cmb_options_main_page = new_cmb2_box( array(
-			'id'           => 'hu_options_framework_options_metabox',
-			'title'        => esc_html( $main_options_title ),
-			'object_types' => array( 'options-page' ),
-			'option_key'      => 'hu_options_framework_main_options', // The option key and admin menu page slug.
-			'capability'        => $main_options_capability, // Cap required to view options-page.
-            // 'icon_url'        => 'dashicons-palmtree', // Menu icon. Only applicable if 'parent_slug' is left empty.
-		) );
         foreach($main_options_page_fields as $main_option){
             if(($main_option['type'] == 'group') && isset($main_option['groupfields']) && !empty($main_option['groupfields'])){
                 $group_fields['hu_options_framework_main_options'][$main_option['id']] = $cmb_options_main_page->add_field($main_option);
@@ -113,8 +98,13 @@ class HUisHUOptionsFramework {
                 }
             } else {
                 $cmb_options_main_page->add_field($main_option);
-            }   
+            }
         }
+    }
+
+    public function _add_legacy_options_pages( $main_options_page_key ){
+        $options_pages = apply_filters( 'huishu_options_framework_options_pages', array() );
+        $cmb_additional_options = array();
         foreach($options_pages as $options_page){
             $title = $options_page['title'];
             $key = $options_page['options_key'];
@@ -126,7 +116,7 @@ class HUisHUOptionsFramework {
                 'option_key'      => $key, // The option key and admin menu page slug.
                 // 'icon_url'        => 'dashicons-palmtree', // Menu icon. Only applicable if 'parent_slug' is left empty.
                 // 'menu_title'      => esc_html__( 'Options', 'myprefix' ), // Falls back to 'title' (above).
-                 'parent_slug'     => 'hu_options_framework_main_options', // Make options page a submenu item of the themes menu.
+                 'parent_slug'     => $main_options_page_key, // Make options page a submenu item of the themes menu.
                  'capability'      => $cap, // Cap required to view options-page.
                 // 'position'        => 1, // Menu position. Only applicable if 'parent_slug' is left empty.
                 // 'admin_menu_hook' => 'network_admin_menu', // 'network_admin_menu' to add network-level options page.
@@ -144,6 +134,37 @@ class HUisHUOptionsFramework {
 				}
             }
         }
+    }
+
+    public function register_options(){
+
+        if( has_filter( 'huishu_options_framework_main_page_fields' ) ) {
+            add_action( 'huishu_options_framework_do_additional_fields', array( $this, '_add_legacy_fields_to_main_options_page' ) );
+        } 
+        if( has_filter('huishu_options_framework_options_pages') ) {
+            add_action( 'huishu_options_framework_do_additional_pages', array( $this, '_add_legacy_options_pages' ) );
+        }
+
+        $main_options_title = __(apply_filters('huishu_options_framework_main_page_title','Zusätzliche Optionen'));
+        $main_options_capability = apply_filters('huishu_options_framework_main_page_capability','manage_options');
+        
+        if( ! ( has_action( 'huishu_options_framework_do_additional_fields' ) || has_action( 'huishu_options_framework_do_additional_pages' ) ) ){
+            return;
+        }
+
+        $cmb_options_main_page = new_cmb2_box( array(
+			'id'                => 'huishu_options_framework_options_metabox',
+			'title'             => esc_html( $main_options_title ),
+			'object_types'      => array( 'options-page' ),
+			'option_key'        => 'hu_options_framework_main_options', // The option key and admin menu page slug.
+			'capability'        => $main_options_capability, // Cap required to view options-page.
+            // 'icon_url'        => 'dashicons-palmtree', // Menu icon. Only applicable if 'parent_slug' is left empty.
+		) );
+
+        do_action( 'huishu_options_framework_do_additional_fields', $cmb_options_main_page );
+
+        do_action( 'huishu_options_framework_do_additional_pages', 'hu_options_framework_main_options' );
+        
     }
 
     public function get_main_option( $key = '', $default = false ){

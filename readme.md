@@ -6,93 +6,42 @@ Bietet Funktionen für Optionen für HUisHU Themes und Plugins
 
 Feld-Argumente einzusehen unter https://github.com/CMB2/CMB2/wiki/Field-Types
 
-### Einfaches Feld auf der Haupt-Optionen-Seite einfügen:
+### Feld auf der Haupt-Optionen-Seite einfügen:
 
 ```
-add_filter('huishu_options_framework_main_page_fields','add_my_text_field');
-function add_my_text_field($options){
-    $options[] = array(
-        'name'    => 'Test Text',
-        'desc'    => 'field description (optional)',
-        'default' => 'standard value (optional)',
-        'id'      => 'wiki_test_text',
-        'type'    => 'text',
-    );
-    return $options;
-}
-```
-
-### Gruppenfeld auf der Haupt-Optionen-Seite einfügen:
-
-```
-add_filter('huishu_options_framework_main_page_fields','add_my_group_field');
-function add_my_group_field($options){
-    $options[] = array(
-	    'id'          => 'wiki_test_repeat_group',
-	    'type'        => 'group',
-	    'description' => __( 'Generates reusable form entries', 'cmb2' ),
-	    'options'     => array(
-            'group_title'       => __( 'Entry {#}', 'cmb2' ), // since version 1.1.4, {#} gets replaced by row number
-            'add_button'        => __( 'Add Another Entry', 'cmb2' ),
-            'remove_button'     => __( 'Remove Entry', 'cmb2' ),
-            'sortable'          => true,
-            // 'closed'         => true, // true to have the groups closed by default
-            // 'remove_confirm' => esc_html__( 'Are you sure you want to remove?', 'cmb2' ), // Performs confirmation before removing group.
-	    ),
-        'groupfields' => array(
-            array(
-                'name'    => 'Test Text',
-                'desc'    => 'field description (optional)',
-                'default' => 'standard value (optional)',
-                'id'      => 'wiki_test_text',
-                'type'    => 'text',
-            ),
+add_action('huishu_options_framework_do_additional_fields','add_my_text_field');
+function add_my_text_field($cmb_options_main_page){
+    $cmb_options_main_page->add_field(
+        array(
+            'name'    => 'Test Text',
+            'desc'    => 'field description (optional)',
+            'default' => 'standard value (optional)',
+            'id'      => 'wiki_test_text',
+            'type'    => 'text',
         )
     );
-    return $options;
 }
 ```
 
 ### Zusätzliche Unter-Optionenseite mit Feldern anlegen:
 
 ```
-add_filter('huishu_options_framework_options_pages','add_my_options_page');
-function add_my_options_page($subpages){
-    $subpages[] = array(
-        'title' => 'Meine Sub-Options-Page', //Titel und links in der Menüleiste
-        'options_key' => 'mein_options_key' //Options-Key, wird für den Abruf benötigt.
-        'capability' => 'edit_other_pages' //default: manage_options
-        'fields' => array(
-            array(
-                'name'    => 'Test Text',
-                'desc'    => 'field description (optional)',
-                'default' => 'standard value (optional)',
-                'id'      => 'wiki_test_text',
-                'type'    => 'text',
-            ),
-            array(
-                'id'          => 'wiki_test_repeat_group',
-                'type'        => 'group',
-                'description' => __( 'Generates reusable form entries', 'cmb2' ),
-                'options'     => array(
-                    'group_title'       => __( 'Entry {#}', 'cmb2' ), // since version 1.1.4, {#} gets replaced by row number
-                    'add_button'        => __( 'Add Another Entry', 'cmb2' ),
-                    'remove_button'     => __( 'Remove Entry', 'cmb2' ),
-                    'sortable'          => true,
-                ),
-                'groupfields' => array(
-                    array(
-                        'name'    => 'Test Text',
-                        'desc'    => 'field description (optional)',
-                        'default' => 'standard value (optional)',
-                        'id'      => 'wiki_test_text',
-                        'type'    => 'text',
-                    ),
-                )
-            )
-        ),
-    );
-    return $subpages;
+add_filter('huishu_options_framework_do_additional_pages','add_my_options_page');
+function add_my_options_page($main_options_key){
+    $cmb_additional_options_page = new_cmb2_box( array(
+        'id'           => 'my_custom_framework_subpage',
+        'title'        => esc_html__( 'Meine Unterseite', 'myprefix' ),
+        'object_types' => array( 'options-page' ),
+        'option_key'      => $key, // The option key and admin menu page slug.
+        // 'icon_url'        => 'dashicons-palmtree', // Menu icon. Only applicable if 'parent_slug' is left empty.
+        // 'menu_title'      => esc_html__( 'Options', 'myprefix' ), // Falls back to 'title' (above).
+        'parent_slug'        => $main_options_key, // Make options page a submenu item of the themes menu.
+            'capability'      => 'manage_options', // Cap required to view options-page.
+        // 'position'        => 1, // Menu position. Only applicable if 'parent_slug' is left empty.
+        // 'admin_menu_hook' => 'network_admin_menu', // 'network_admin_menu' to add network-level options page.
+        // 'display_cb'      => false, // Override the options-page form output (CMB2_Hookup::options_page_output()).
+        // 'save_button'     => esc_html__( 'Save Theme Options', 'myprefix' ), // The text for the options-page save button. Defaults to 'Save'.
+    ) );
 }
 ```
 
