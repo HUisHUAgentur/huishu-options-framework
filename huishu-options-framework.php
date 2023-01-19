@@ -56,6 +56,7 @@ add_action('plugins_loaded',array('HUisHUOptionsFramework','getInstance'));
 
 class HUisHUOptionsFramework {
     protected static $_instance = null;
+    private $options_name = 'hu_options_framework_main_options';
     
     /**
     * get instance
@@ -87,14 +88,20 @@ class HUisHUOptionsFramework {
         add_action( 'cmb2_admin_init', array( $this, 'register_options' ) );
     }
 
+    public function get_main_options_name(){
+        return $this->options_name;
+    }
+
     public function _add_legacy_fields_to_main_options_page( $cmb_options_main_page ){
         $main_options_page_fields = apply_filters( 'huishu_options_framework_main_page_fields', array() );
+        $main_options_even_older = apply_filters( 'huishu_framework_options_page_options', array() );
+        $main_options_page_fields = array_merge( $main_options_page_fields, $main_options_even_older );
         $group_fields = array();
         foreach($main_options_page_fields as $main_option){
             if(($main_option['type'] == 'group') && isset($main_option['groupfields']) && !empty($main_option['groupfields'])){
-                $group_fields['hu_options_framework_main_options'][$main_option['id']] = $cmb_options_main_page->add_field($main_option);
+                $group_fields[$this->get_main_options_name()][$main_option['id']] = $cmb_options_main_page->add_field($main_option);
                 foreach($main_option['groupfields'] as $groupfield){
-                    $cmb_options_main_page->add_group_field($group_fields['hu_options_framework_main_options'][$main_option['id']], $groupfield);
+                    $cmb_options_main_page->add_group_field($group_fields[$this->get_main_options_name()][$main_option['id']], $groupfield);
                 }
             } else {
                 $cmb_options_main_page->add_field($main_option);
@@ -156,19 +163,19 @@ class HUisHUOptionsFramework {
 			'id'                => 'huishu_options_framework_options_metabox',
 			'title'             => esc_html( $main_options_title ),
 			'object_types'      => array( 'options-page' ),
-			'option_key'        => 'hu_options_framework_main_options', // The option key and admin menu page slug.
+			'option_key'        => $this->get_main_options_name(), // The option key and admin menu page slug.
 			'capability'        => $main_options_capability, // Cap required to view options-page.
             // 'icon_url'        => 'dashicons-palmtree', // Menu icon. Only applicable if 'parent_slug' is left empty.
 		) );
 
         do_action( 'huishu_options_framework_do_additional_fields', $cmb_options_main_page );
 
-        do_action( 'huishu_options_framework_do_additional_pages', 'hu_options_framework_main_options' );
+        do_action( 'huishu_options_framework_do_additional_pages', $this->get_main_options_name() );
         
     }
 
     public function get_main_option( $key = '', $default = false ){
-        return $this->get_option( 'hu_options_framework_main_options', $key, $default );
+        return $this->get_option( $this->get_main_options_name(), $key, $default );
     }
 
     public function get_option( $option, $key = '', $default = false ) {
@@ -190,4 +197,15 @@ class HUisHUOptionsFramework {
 
 function hu_options_framework(){
     return HUisHUOptionsFramework::getInstance();
+}
+
+if( ! function_exists( 'huishu_framework_get_options_page_options' ) ){
+    function huishu_framework_get_options_page_options(){
+    }
+}
+
+if( ! function_exists( 'huishu_get_custom_theme_options_name' ) ){
+    function huishu_get_custom_theme_options_name(){
+        return hu_options_framework()->get_main_options_name();
+    }
 }
