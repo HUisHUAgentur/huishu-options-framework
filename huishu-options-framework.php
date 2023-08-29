@@ -3,7 +3,7 @@
 Plugin Name: HUisHU Options Framework
 Description: Bietet Funktionen für Optionen für HUisHU Themes und Plugins
 Version: 1.0.4
-Author: Sebastian Blasius, HUisHU
+Author: HUisHU. Digitale Kreativagentur GmbH
 Author URI: https://www.huishu-agentur.de
 License: GPL2+
 */
